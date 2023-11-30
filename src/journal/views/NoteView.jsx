@@ -1,5 +1,6 @@
 import { SaveOutlined } from "@mui/icons-material";
 import { Grid, Button, Typography, TextField } from "@mui/material";
+import { ImageGallery } from '../components/ImageGallery';
 
 export const NoteView = () => {
   return (
@@ -33,6 +34,7 @@ export const NoteView = () => {
             rows={5}
         />
       </Grid>
+      <ImageGallery />
     </Grid>
   );
 };
