@@ -1,9 +1,10 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Google } from "@mui/icons-material";
+import { useDispatch  } from "react-redux";
 import { Grid, Typography, TextField, Button, Link } from "@mui/material";
 import { AuthLayout } from "../layout/AuthLayout";
 import { useForm } from "../../hooks/useForm";
 import { useState } from "react";
+import { startCreatingUserWithEmailPassword } from "../../store/auth/thunks";
 
 const formData = {
   email: "exmaple@gmail.com",
@@ -22,6 +23,8 @@ const formValidations = {
 
 export const RegisterPage = () => {
 
+  const dispatch = useDispatch();
+
   const [formSubmitted, setformSubmitted] = useState(false);
 
   const {
@@ -39,7 +42,8 @@ export const RegisterPage = () => {
   const onSubmitForm = (event) => {
     event.preventDefault();
     setformSubmitted(true);
-    console.log(formState);
+    if (!isFormValid) return;
+    dispatch(startCreatingUserWithEmailPassword(formState));
   };
 
 

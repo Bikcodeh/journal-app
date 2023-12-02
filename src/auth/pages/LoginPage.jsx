@@ -21,8 +21,6 @@ export const LoginPage = () => {
   const { status } = useSelector((state) => state.auth);
   useEffect(() => {
     
-  
- console.log(status)
   }, [status])
   
 
@@ -30,7 +28,6 @@ export const LoginPage = () => {
 
   const onSubmitForm = (event) => {
     event.preventDefault();
-    console.log(email, password);
     dispatch(checkingAuthentication(email, password));
   };
 
