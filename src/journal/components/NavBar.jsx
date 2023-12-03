@@ -1,9 +1,11 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppBar, Toolbar, IconButton, Grid, Typography } from "@mui/material";
 import { LogoutOutlined, MenuOutlined } from "@mui/icons-material";
 import { startLogout } from "../../store/auth/thunks";
+import { setIsMenuOpen } from "../../store/menu/menuSlice";
 
 export const NavBar = ({ drawerWidth = 240 }) => {
+  const {isOpen} = useSelector(state => state.menu);
   const dispath = useDispatch();
   const onLogout = () => {
     dispath(startLogout());
@@ -17,13 +19,15 @@ export const NavBar = ({ drawerWidth = 240 }) => {
       }}
     >
       <Toolbar>
-        <IconButton
-          color="inherit"
-          edge="start"
-          sx={{ mr: 2, display: { sm: "none" } }}
-        >
-          <MenuOutlined />
-        </IconButton>
+      <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={() => dispath(setIsMenuOpen(!isOpen))}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuOutlined />
+          </IconButton>
         <Grid
           container
           direction="row"
