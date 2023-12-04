@@ -24,7 +24,7 @@ export const startLoadingNotes = () => {
     return async (dispatch, getState) => {
         const { uid } = getState().auth;
         if (!uid) throw new Error('UID DOEST NOT EXIST');
-        const notes = await loadNotes();
-        dispatch(setNotes(notes))
+        const notes = await loadNotes(uid);
+        dispatch(setNotes(notes));
     }
 }
