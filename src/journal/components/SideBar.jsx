@@ -27,7 +27,7 @@ export const SideBar = ({ drawerWidth = 240 }) => {
       <Toolbar>
         <IconButton
           onClick={handleDrawerToggle}
-          sx={{ display: { xs: "block", sm: "none" } }}
+          sx={{ mr: 1, display: { xs: "block", sm: "none" } }}
         >
           <ArrowBack />
         </IconButton>
