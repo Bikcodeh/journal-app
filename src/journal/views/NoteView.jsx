@@ -1,17 +1,24 @@
 import { useMemo, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { SaveOutlined, UploadFileOutlined } from "@mui/icons-material";
-import { Grid, Button, Typography, TextField, IconButton } from "@mui/material";
+import {
+  DeleteOutline,
+  SaveOutlined,
+  UploadFileOutlined,
+} from "@mui/icons-material";
+import { Grid, Button, Typography, TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.css";
 
 import { ImageGallery } from "../components/ImageGallery";
 import { useForm } from "../../hooks/useForm";
 import { setActiveNote } from "../../store/journal/journalSlice";
-import { startSavingNote, startUploadingFiles } from "../../store/journal/thunks";
+import {
+  startDeletingNote,
+  startSavingNote,
+  startUploadingFiles,
+} from "../../store/journal/thunks";
 
 export const NoteView = () => {
-
   const fileInputRef = useRef();
   const dispatch = useDispatch();
   const {
@@ -30,7 +37,7 @@ export const NoteView = () => {
   }, [formState]);
   useEffect(() => {
     if (messageSaved.length > 0) {
-      Swal.fire('Note updated', messageSaved);
+      Swal.fire("Note updated", messageSaved);
     }
   }, [messageSaved]);
 
@@ -38,11 +45,15 @@ export const NoteView = () => {
     dispatch(startSavingNote());
   };
 
-  const onFileInputChange = ({target}) => {
-      if (target.files === 0) return;
-      console.log('saving')
-      dispatch(startUploadingFiles(target.files));
-  }
+  const onFileInputChange = ({ target }) => {
+    if (target.files === 0) return;
+    console.log("saving");
+    dispatch(startUploadingFiles(target.files));
+  };
+
+  const onDelete = () => {
+    dispatch(startDeletingNote());
+  };
 
   return (
     <Grid
@@ -63,19 +74,25 @@ export const NoteView = () => {
           type="file"
           multiple
           onChange={onFileInputChange}
-          style={{ display: 'none'}}
+          style={{ display: "none" }}
           ref={fileInputRef}
-           />
-        <IconButton onClick={() => fileInputRef.current.click()}>
-          <UploadFileOutlined />
-        </IconButton>
+        />
+        <Button
+          onClick={() => fileInputRef.current.click()}
+          component="label"
+          variant="contained"
+          startIcon={<UploadFileOutlined />}
+          sx={{ mr: 1 }}
+        >
+          UPLOAD FILES
+        </Button>
         <Button
           disabled={isSaving}
           onClick={onSaveNote}
           color="primary"
-          sx={{ padding: 2 }}
+          variant="contained"
+          startIcon={<SaveOutlined />}
         >
-          <SaveOutlined sx={{ fontSize: 30, mr: 1 }} />
           Save
         </Button>
       </Grid>
@@ -99,7 +116,18 @@ export const NoteView = () => {
           onChange={onInputChange}
         />
       </Grid>
-      <ImageGallery images={note.imageUrls}/>
+      <Grid container justifyContent="end">
+        <Button
+          onClick={onDelete}
+          sx={{ mt: 2 }}
+          variant="contained"
+          color="error"
+        >
+          DELETE NOTE
+          <DeleteOutline />
+        </Button>
+      </Grid>
+      <ImageGallery images={note.imageUrls} />
     </Grid>
   );
 };
