@@ -1,15 +1,22 @@
-import { SaveOutlined } from "@mui/icons-material";
+import { useMemo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { SaveOutlined } from "@mui/icons-material";
 import { Grid, Button, Typography, TextField } from "@mui/material";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.css";
+
 import { ImageGallery } from "../components/ImageGallery";
 import { useForm } from "../../hooks/useForm";
-import { useMemo, useEffect } from "react";
 import { setActiveNote } from "../../store/journal/journalSlice";
 import { startSavingNote } from "../../store/journal/thunks";
 
 export const NoteView = () => {
   const dispatch = useDispatch();
-  const { active: note } = useSelector((state) => state.journal);
+  const {
+    active: note,
+    messageSaved,
+    isSaving,
+  } = useSelector((state) => state.journal);
   const { body, title, date, onInputChange, formState } = useForm(note);
   const dateToDisplay = useMemo(() => {
     const newDate = new Date(date).toUTCString();
@@ -18,12 +25,17 @@ export const NoteView = () => {
 
   useEffect(() => {
     dispatch(setActiveNote(formState));
-  }, [formState])
+  }, [formState]);
+  useEffect(() => {
+    if (messageSaved.length > 0) {
+      Swal.fire('Note updated', messageSaved);
+    }
+  }, [messageSaved]);
 
   const onSaveNote = () => {
-      dispatch(startSavingNote());
-  }
-  
+    dispatch(startSavingNote());
+  };
+
   return (
     <Grid
       className="animate__animated animate__fadeIn"
@@ -35,11 +47,16 @@ export const NoteView = () => {
     >
       <Grid item>
         <Typography fontSize={30} fontWeight="light">
-          { dateToDisplay}
+          {dateToDisplay}
         </Typography>
       </Grid>
       <Grid item>
-        <Button  onClick={onSaveNote} color="primary" sx={{ padding: 2 }}>
+        <Button
+          disabled={isSaving}
+          onClick={onSaveNote}
+          color="primary"
+          sx={{ padding: 2 }}
+        >
           <SaveOutlined sx={{ fontSize: 30, mr: 1 }} />
           Save
         </Button>
