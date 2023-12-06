@@ -25,6 +25,7 @@ export const journalSlice = createSlice({
             state.messageSaved = '';
         },
         updateNote: (state, action) => {
+            console.log(action.payload);
             state.isSaving = false;
             state.notes = state.notes.map(note => {
                 if (note.id === action.payload.id) {
@@ -32,7 +33,7 @@ export const journalSlice = createSlice({
                 }
                 return note;
             });
-            state.messageSaved = `${action.payload.title}, updated successfully`;
+            state.messageSaved = `${action.payload.title}, ${action.payload.message}`;
             state.active = action.payload;
         },
         setImagesToActiveNote: (state, action) => {

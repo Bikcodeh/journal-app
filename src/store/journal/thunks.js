@@ -36,14 +36,14 @@ export const startSavingNote = ({title, body }) => {
         if (noteToFirestore.id !== undefined && noteToFirestore.id !== null) {
             const docRef = doc(FirebaseDB, `${uid}/journal/notes/${noteToFirestore.id}`);
             await setDoc(docRef, noteToFirestore, { merge: true });
-            dispatch(updateNote(noteToFirestore));
+            dispatch(updateNote({...noteToFirestore, message: 'Updated successfully!'}));
         } else {
             const docRef = await addDoc(collection(FirebaseDB, `${uid}/journal/notes`), noteToFirestore);
             const newNote = { ...noteToFirestore, id: docRef.id };
             const docRefToUpdate = doc(FirebaseDB, `${uid}/journal/notes/${newNote.id}`);
             await updateDoc(docRefToUpdate, newNote)
             dispatch(addNewEmptyNote(newNote));
-            dispatch(updateNote(newNote));
+            dispatch(updateNote({...newNote, message: 'Created successfully'}));
         }
     }
 }

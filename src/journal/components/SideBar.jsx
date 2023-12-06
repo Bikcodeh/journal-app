@@ -21,14 +21,14 @@ export const SideBar = React.memo(({ drawerWidth = 240 }) => {
     (state) => state.journal,
     (prevState, nextState) =>
       prevState.notes === nextState.notes &&
-      prevState.active ===  nextState.active
+      prevState.active === nextState.active
   );
 
   const dispatch = useDispatch();
 
   const handleDrawerToggle = () => {
     dispatch(setIsMenuOpen(!isOpen));
-  };  
+  };
 
   const DrawerContent = () => (
     <>
@@ -47,7 +47,6 @@ export const SideBar = React.memo(({ drawerWidth = 240 }) => {
       {notes.length > 0 ? (
         <List>
           {notes.map((note) => {
-            console.log(note.title);
             return (
               <SideBarItem
                 key={note.id}
