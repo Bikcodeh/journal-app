@@ -1,26 +1,34 @@
+import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Divider,
+  Grid,
   Drawer,
   List,
   Toolbar,
   Typography,
   IconButton,
 } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, Comment } from "@mui/icons-material";
 import { setIsMenuOpen } from "../../store/menu/menuSlice";
 import { SideBarItem } from "./SideBarItem";
+import { useEffect } from "react";
 
-export const SideBar = ({ drawerWidth = 240 }) => {
+export const SideBar = React.memo(({ drawerWidth = 240 }) => {
   const { isOpen } = useSelector((state) => state.menu);
-  const { notes, active } = useSelector((state) => state.journal);
+  const { notes, active } = useSelector(
+    (state) => state.journal,
+    (prevState, nextState) =>
+      prevState.notes === nextState.notes &&
+      prevState.active ===  nextState.active
+  );
 
   const dispatch = useDispatch();
 
   const handleDrawerToggle = () => {
     dispatch(setIsMenuOpen(!isOpen));
-  };
+  };  
 
   const DrawerContent = () => (
     <>
@@ -36,16 +44,31 @@ export const SideBar = ({ drawerWidth = 240 }) => {
         </Typography>
       </Toolbar>
       <Divider />
-
-      <List>
-        {notes.map((note) => (
-          <SideBarItem
-            key={note.id}
-            {...note}
-            isActive={note.id == active?.id}
-          />
-        ))}
-      </List>
+      {notes.length > 0 ? (
+        <List>
+          {notes.map((note) => {
+            console.log(note.title);
+            return (
+              <SideBarItem
+                key={note.id}
+                {...note}
+                isActive={active?.id == note.id}
+              />
+            );
+          })}
+        </List>
+      ) : (
+        <Grid
+          container
+          justifyContent="center"
+          height="100%"
+          direction="column"
+          alignItems="center"
+        >
+          <Comment />
+          <Typography>Your notes will appear here</Typography>
+        </Grid>
+      )}
     </>
   );
 
@@ -81,4 +104,4 @@ export const SideBar = ({ drawerWidth = 240 }) => {
       </Drawer>
     </Box>
   );
-};
+});

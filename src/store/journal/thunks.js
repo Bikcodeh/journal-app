@@ -1,23 +1,17 @@
-import { doc, collection, setDoc, deleteDoc } from "firebase/firestore/lite";
+import { doc, collection, setDoc, deleteDoc, addDoc, updateDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
 import { addNewEmptyNote, deleteNoteById, setActiveNote, setImagesToActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
 import { loadNotes } from "../../helpers/loadNotes";
 import { fileUpload } from "../../helpers/fileUpload";
 
 export const startAddNewNote = () => {
-    return async (dispatch, getState) => {
-        dispatch(setSaving());
-        const { uid } = getState().auth;
+    return async (dispatch) => {
         const newNote = {
             title: '',
             body: '',
             date: new Date().getTime(),
             imageUrls: []
         }
-        const newDoc = doc(collection(FirebaseDB, `${uid}/journal/notes`));
-        await setDoc(newDoc, newNote);
-        newNote.id = newDoc.id;
-        dispatch(addNewEmptyNote(newNote));
         dispatch(setActiveNote(newNote));
     }
 }
@@ -31,17 +25,26 @@ export const startLoadingNotes = () => {
     }
 }
 
-export const startSavingNote = () => {
+export const startSavingNote = ({title, body }) => {
     return async (dispatch, getState) => {
         dispatch(setSaving());
         const { uid } = getState().auth;
         const { active: note } = getState().journal;
 
-        const noteToFirestore = { ...note };
-        delete noteToFirestore.id;
-        const docRef = doc(FirebaseDB, `${uid}/journal/notes/${note.id}`);
-        await setDoc(docRef, noteToFirestore, { merge: true });
-        dispatch(updateNote(note));
+        const noteToFirestore = { ...note, title, body };
+
+        if (noteToFirestore.id !== undefined && noteToFirestore.id !== null) {
+            const docRef = doc(FirebaseDB, `${uid}/journal/notes/${noteToFirestore.id}`);
+            await setDoc(docRef, noteToFirestore, { merge: true });
+            dispatch(updateNote(noteToFirestore));
+        } else {
+            const docRef = await addDoc(collection(FirebaseDB, `${uid}/journal/notes`), noteToFirestore);
+            const newNote = { ...noteToFirestore, id: docRef.id };
+            const docRefToUpdate = doc(FirebaseDB, `${uid}/journal/notes/${newNote.id}`);
+            await updateDoc(docRefToUpdate, newNote)
+            dispatch(addNewEmptyNote(newNote));
+            dispatch(updateNote(newNote));
+        }
     }
 }
 

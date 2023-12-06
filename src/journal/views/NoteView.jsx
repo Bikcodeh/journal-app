@@ -19,6 +19,7 @@ import {
 } from "../../store/journal/thunks";
 
 export const NoteView = () => {
+
   const fileInputRef = useRef();
   const dispatch = useDispatch();
   const {
@@ -26,15 +27,17 @@ export const NoteView = () => {
     messageSaved,
     isSaving,
   } = useSelector((state) => state.journal);
+
   const { body, title, date, onInputChange, formState } = useForm(note);
   const dateToDisplay = useMemo(() => {
     const newDate = new Date(date).toUTCString();
     return newDate;
   }, [date]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     dispatch(setActiveNote(formState));
-  }, [formState]);
+  }, [formState]);*/
+
   useEffect(() => {
     if (messageSaved.length > 0) {
       Swal.fire("Note updated", messageSaved);
@@ -42,12 +45,11 @@ export const NoteView = () => {
   }, [messageSaved]);
 
   const onSaveNote = () => {
-    dispatch(startSavingNote());
+    dispatch(startSavingNote({body, title}));
   };
 
   const onFileInputChange = ({ target }) => {
     if (target.files === 0) return;
-    console.log("saving");
     dispatch(startUploadingFiles(target.files));
   };
 
