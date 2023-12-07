@@ -3,7 +3,7 @@ export const initialState = {
     uid: null,
     email: null,
     displayName: null,
-    photoUrl: null,
+    photoURL: null,
     errorMessage: null,
 }
 
@@ -12,7 +12,7 @@ export const authenticatedState = {
     uid: '123ABC',
     email: 'demo@google.com',
     displayName: 'Demo User',
-    photoUrl: 'https://demo.jpg',
+    photoURL: 'https://demo.jpg',
     errorMessage: null,
 }
 
@@ -21,7 +21,7 @@ export const notAuthenticatedState = {
     uid: null,
     email: null,
     displayName: null,
-    photoUrl: null,
+    photoURL: null,
     errorMessage: null,
 }
 
@@ -29,5 +29,5 @@ export const demoUser = {
     uid: 'ABC123',
     email: 'demo@google.com',
     displayName: 'Demo User',
-    photoUrl: 'https://foto.jpg'
+    photoURL: 'https://foto.jpg'
 }
