@@ -10,7 +10,7 @@ cloudinary.config({
 
 describe('Tests on FileUpload', () => { 
     test('should upload correctly given image', async () => {
-        const imageurl = 'https://www.cmuse.org/wp-content/uploads/2019/09/How-To-Compose-Music.jpg';
+        const imageurl = '    https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png';
         const respt = await fetch(imageurl);
         const blob = await respt.blob();
         const file = new File([blob], 'picture.jpg');
