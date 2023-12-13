@@ -31,3 +31,10 @@ export const demoUser = {
     displayName: 'Demo User',
     photoURL: 'https://foto.jpg'
 }
+
+export const noteFake = {
+    body: 'body test',
+    date: 123123,
+    imageUrls: ['data', 'dataaa'],
+    title: 'soy title'
+}
