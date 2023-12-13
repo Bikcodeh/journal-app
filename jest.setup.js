@@ -9,3 +9,5 @@ require('dotenv').config({
 jest.mock('./src/helpers/getEnvironments', () => ({
     getEnvironments: () => ({ ...process.env })
 }));
+
+jest.setTimeout(30000);

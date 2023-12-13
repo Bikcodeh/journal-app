@@ -65,6 +65,7 @@ export const LoginPage = () => {
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              data-testid="email"
               label="Email"
               type="email"
               placeholder="doe@gmail.com"
@@ -78,6 +79,7 @@ export const LoginPage = () => {
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              data-testid="password"
               label="Password"
               type="password"
               placeholder="*********"
