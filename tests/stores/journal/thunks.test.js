@@ -1,6 +1,8 @@
 import { loadNotes } from "../../../src/helpers/loadNotes";
 import { noteFake  } from "../../fixtures/authFixtures";
 import { startAddNewNote, startLoadingNotes, startSavingNote } from "../../../src/store/journal/thunks";
+import { collection, deleteDoc, getDocs } from "firebase/firestore/lite";
+import { FirebaseDB } from "../../../src/firebase/config";
 
 jest.mock('../../../src/helpers/loadNotes')
 describe('Tests for Journal Thunks', () => {
@@ -53,5 +55,12 @@ describe('Tests for Journal Thunks', () => {
                 title: 'test',
                 body: 'body test'
             })(dispatch, getState)
+
+            const collectionRef = collection(FirebaseDB, `${UID_TEST}/journal/notes`);
+            const docs = await getDocs(collectionRef);
+
+            const deletePromises = [];
+            docs.forEach(doc => deletePromises.push(deleteDoc(doc.ref)));
+            await Promise.all(deletePromises);
       });
 });
