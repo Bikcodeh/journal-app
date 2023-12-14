@@ -3,12 +3,21 @@ import { configureStore } from "@reduxjs/toolkit";
 import { authSlice } from "../../../src/store/auth/authSlice";
 import { MemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { notAuthenticatedState } from "../../fixtures/authFixtures";
 const { LoginPage } = require("../../../src/auth/pages/LoginPage");
+
+const mockStartGoogleSignIn = jest.fn();
+jest.mock('../../../src/store/auth/thunks', () => ({
+    startGoogleSignIn: () => mockStartGoogleSignIn
+}))
 
 const storeTest = configureStore({
   reducer: {
     auth: authSlice.reducer,
   },
+  preloadedState: {
+    auth: notAuthenticatedState
+  }
 });
 
 describe("Tests for LoginPage", () => {
@@ -49,4 +58,17 @@ describe("Tests for LoginPage", () => {
       })
     ).toBeTruthy();
   });
+
+  test('google button should call startGoogleSignIn', () => { 
+    render(
+        <Provider store={storeTest}>
+          <MemoryRouter>
+            <LoginPage />
+          </MemoryRouter>
+        </Provider>
+      );
+      const googleBtn = screen.getByLabelText('google-btn');
+      fireEvent.click(googleBtn);
+      expect(mockStartGoogleSignIn).toHaveBeenCalled();
+   });
 });
