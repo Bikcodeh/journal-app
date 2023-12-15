@@ -7,17 +7,27 @@ import { notAuthenticatedState } from "../../fixtures/authFixtures";
 const { LoginPage } = require("../../../src/auth/pages/LoginPage");
 
 const mockStartGoogleSignIn = jest.fn();
-jest.mock('../../../src/store/auth/thunks', () => ({
-    startGoogleSignIn: () => mockStartGoogleSignIn
-}))
+const mockStartLoginWithEmailPassword = jest.fn();
+
+jest.mock("../../../src/store/auth/thunks", () => ({
+  startGoogleSignIn: () => mockStartGoogleSignIn,
+  startLoginWithEmailPassword: ({email, password }) => {
+    return () => mockStartLoginWithEmailPassword({email, password })
+  }
+}));
+
+jest.mock('react-redux', () => ({
+    ...jest.requireActual('react-redux'),
+    useDispatch: () => (fn) => fn()
+}));
 
 const storeTest = configureStore({
   reducer: {
     auth: authSlice.reducer,
   },
   preloadedState: {
-    auth: notAuthenticatedState
-  }
+    auth: notAuthenticatedState,
+  },
 });
 
 describe("Tests for LoginPage", () => {
@@ -59,16 +69,39 @@ describe("Tests for LoginPage", () => {
     ).toBeTruthy();
   });
 
-  test('google button should call startGoogleSignIn', () => { 
+  test("google button should call startGoogleSignIn", () => {
     render(
-        <Provider store={storeTest}>
-          <MemoryRouter>
-            <LoginPage />
-          </MemoryRouter>
-        </Provider>
-      );
-      const googleBtn = screen.getByLabelText('google-btn');
-      fireEvent.click(googleBtn);
-      expect(mockStartGoogleSignIn).toHaveBeenCalled();
-   });
+      <Provider store={storeTest}>
+        <MemoryRouter>
+          <LoginPage />
+        </MemoryRouter>
+      </Provider>
+    );
+    const googleBtn = screen.getByLabelText("google-btn");
+    fireEvent.click(googleBtn);
+    expect(mockStartGoogleSignIn).toHaveBeenCalled();
+  });
+
+  test("when submit form should call startLoginWithEmailPassword", () => {
+    const emailExample = "email@example.com";
+    const passwordExample = "12345678";
+    render(
+      <Provider store={storeTest}>
+        <MemoryRouter>
+          <LoginPage />
+        </MemoryRouter>
+      </Provider>
+    );
+    const emailTextField = screen.getByLabelText("Email");
+    const passwordTextField = screen.getByLabelText("Password");
+    fireEvent.input(emailTextField, { target: { value: emailExample } });
+    fireEvent.input(passwordTextField, { target: { value: passwordExample } });
+    const form = screen.getByLabelText('form-login');
+    fireEvent.submit(form)
+
+    expect(mockStartLoginWithEmailPassword).toHaveBeenCalledWith({
+        email: emailExample,
+        password: passwordExample
+    })
+  });
 });

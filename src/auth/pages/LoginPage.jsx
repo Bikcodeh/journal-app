@@ -62,7 +62,7 @@ export const LoginPage = () => {
   };
   return (
     <AuthLayout title="Login">
-      <form onSubmit={onSubmitForm} className="animate__animated animate__fadeIn">
+      <form onSubmit={onSubmitForm} className="animate__animated animate__fadeIn" aria-label="form-login">
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
