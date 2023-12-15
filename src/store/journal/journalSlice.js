@@ -25,7 +25,6 @@ export const journalSlice = createSlice({
             state.messageSaved = '';
         },
         updateNote: (state, action) => {
-            console.log(action.payload);
             state.isSaving = false;
             state.notes = state.notes.map(note => {
                 if (note.id === action.payload.id) {
