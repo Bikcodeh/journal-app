@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from "react";
+import { useMemo, useEffect, useRef, ChangeEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   DeleteOutline,
@@ -11,32 +11,27 @@ import "sweetalert2/dist/sweetalert2.css";
 
 import { ImageGallery } from "../components/ImageGallery";
 import { useForm } from "../../hooks/useForm";
-import { setActiveNote } from "../../store/journal/journalSlice";
 import {
   startDeletingNote,
   startSavingNote,
   startUploadingFiles,
 } from "../../store/journal/thunks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { Note } from "../../store/journal";
 
 export const NoteView = () => {
 
-  const fileInputRef = useRef();
-  const dispatch = useDispatch();
-  const {
-    active: note,
-    messageSaved,
-    isSaving,
-  } = useSelector((state) => state.journal);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const dispatch = useAppDispatch();
+  const { active: note, messageSaved, isSaving } = useAppSelector(state => state.journal);
 
-  const { body, title, date, onInputChange, formState } = useForm(note);
+  if (!note) return;
+  const {  body, date, id, imageUrls, title, onInputChange } = useForm<Note>(note)
+
   const dateToDisplay = useMemo(() => {
     const newDate = new Date(date).toUTCString();
     return newDate;
   }, [date]);
-
-  /*useEffect(() => {
-    dispatch(setActiveNote(formState));
-  }, [formState]);*/
 
   useEffect(() => {
     if (messageSaved.length > 0) {
@@ -45,12 +40,13 @@ export const NoteView = () => {
   }, [messageSaved]);
 
   const onSaveNote = () => {
-    dispatch(startSavingNote({body, title}));
+    dispatch(startSavingNote({ body, title }));
   };
 
-  const onFileInputChange = ({ target }) => {
-    if (target.files === 0) return;
-    dispatch(startUploadingFiles(target.files));
+  const onFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    if (e.target.files.length === 0) return;
+    dispatch(startUploadingFiles({ files: e.target.files}));
   };
 
   const onDelete = () => {
@@ -80,7 +76,7 @@ export const NoteView = () => {
           ref={fileInputRef}
         />
         <Button
-          onClick={() => fileInputRef.current.click()}
+          onClick={() => fileInputRef.current?.click()}
           component="label"
           variant="contained"
           startIcon={<UploadFileOutlined />}
@@ -129,7 +125,7 @@ export const NoteView = () => {
           <DeleteOutline />
         </Button>
       </Grid>
-      <ImageGallery images={note.imageUrls} />
+      <ImageGallery images={note?.imageUrls} />
     </Grid>
   );
 };

@@ -1,4 +1,4 @@
-export const fileUpload = async (file) => {
+export const fileUpload = async (file: File) => {
 
     const cloudUrl = 'https://api.cloudinary.com/v1_1/react-images-bikcode/upload';
     const formData = new FormData();
@@ -12,7 +12,7 @@ export const fileUpload = async (file) => {
         if (!resp.ok) throw new Error('Error uploading file');
         const cloudResp = await resp.json();
         return cloudResp.secure_url;
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error.message);
     }
 }

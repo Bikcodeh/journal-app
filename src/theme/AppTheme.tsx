@@ -1,8 +1,13 @@
+import { ReactNode } from "react";
 import { ThemeProvider } from "@emotion/react"
 import { CssBaseline } from "@mui/material"
 import { purpleTheme } from './purpleTheme';
 
-export const AppTheme = ({ children }) => {
+interface Props {
+  children: ReactNode;
+}
+
+export const AppTheme = ({ children }: Props) => {
   return (
    <ThemeProvider theme={ purpleTheme}>
         <CssBaseline />

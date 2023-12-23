@@ -5,9 +5,9 @@ import { Provider } from "react-redux";
 import "./styles.css";
 
 import { JournalApp } from "./JournalApp";
-import { store } from "./store/store";
+import store from "./store/store";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>

@@ -1,9 +1,15 @@
+import { ChangeEvent } from 'react';
+import { FormValidations } from './../interface/index';
 import { useEffect, useMemo, useState } from 'react';
 
-export const useForm = (initialForm = {}, formValidations = {}) => {
+export interface FormType {
+    [key: string]: string;
+}
+
+export const useForm = <T extends FormType>(initialForm: T, formValidations: FormValidations = {}) => {
 
     const [formState, setFormState] = useState(initialForm);
-    const [formValidation, setFormValidation] = useState({});
+    const [formValidation, setFormValidation] = useState<{ [key: string]: string | null }>({});
 
     useEffect(() => {
         createValidations()
@@ -22,8 +28,8 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     }, [formValidation]);
 
 
-    const onInputChange = ({ target }) => {
-        const { name, value } = target;
+    const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
         setFormState({
             ...formState,
             [name]: value
@@ -31,7 +37,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     }
 
     const createValidations = () => {
-        const formCheckedValues = {};
+        const formCheckedValues: { [key: string]: string | null } = {};
         for (const formField of Object.keys(formValidations)) {
             const [fn, errorMessage] = formValidations[formField];
             formCheckedValues[`${formField}Valid`] = fn(formState[formField]) ? null : errorMessage;

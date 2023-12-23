@@ -8,9 +8,19 @@ import {
 } from "@mui/material";
 import { TurnedInNot } from "@mui/icons-material";
 import { setActiveNote } from "../../store/journal/journalSlice";
+import { useAppDispatch } from "../../hooks/hooks";
 
-export const SideBarItem = ({ id, title, body, isActive, date, imageUrls }) => {
-    const dispatch = useDispatch();
+interface Props {
+  id: string;
+  title: string;
+  body: string;
+  isActive: boolean;
+  date: number;
+  imageUrls: string[];
+}
+
+export const SideBarItem = ({ id, title, body, isActive, date, imageUrls }: Props) => {
+    const dispatch = useAppDispatch();
   const onItemClick = () => {
     dispatch(setActiveNote({ title, body, id, imageUrls, date}));
   };

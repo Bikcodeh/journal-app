@@ -3,10 +3,11 @@ import { AppBar, Toolbar, IconButton, Grid, Typography } from "@mui/material";
 import { LogoutOutlined, MenuOutlined } from "@mui/icons-material";
 import { startLogout } from "../../store/auth/thunks";
 import { setIsMenuOpen } from "../../store/menu/menuSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 
 export const NavBar = ({ drawerWidth = 240 }) => {
-  const {isOpen} = useSelector(state => state.menu);
-  const dispath = useDispatch();
+  const {isOpen} = useAppSelector(state => state.menu);
+  const dispath = useAppDispatch();
   const onLogout = () => {
     dispath(startLogout());
   };

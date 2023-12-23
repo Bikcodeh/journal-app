@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { Google } from "@mui/icons-material";
@@ -12,21 +12,23 @@ import {
 } from "@mui/material";
 
 import { AuthLayout } from "../layout/AuthLayout";
-import { useForm } from "../../hooks";
+import { FormType, useForm } from "../../hooks";
 import {
   startGoogleSignIn,
   startLoginWithEmailPassword,
 } from "../../store/auth/thunks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { FormValidations } from "../../interface";
 
-const formData = {
+const formData: FormType = {
   email: "",
   password: "",
 };
 
-const formValidations = {
-  email: [(value) => value.includes("@"), "Email must to have @"],
+const formValidations: FormValidations = {
+  email: [(value: string) => value.includes("@"), "Email must to have @"],
   password: [
-    (value) => value.length >= 6,
+    (value: string) => value.length >= 6,
     "Password must to have more than 6 characters",
   ],
 };
@@ -34,9 +36,9 @@ const formValidations = {
 export const LoginPage = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const dispatch = useDispatch();
-  const { status, errorMessage } = useSelector((state) => state.auth);
-  useEffect(() => {}, [status]);
+  const dispatch = useAppDispatch();
+  const { status, errorMessage } = useAppSelector((state) => state.auth);
+  useEffect(() => { }, [status]);
 
   const isAuthenticating = useMemo(() => status === "checking", [status]);
 
@@ -49,7 +51,7 @@ export const LoginPage = () => {
     isFormValid,
   } = useForm(formData, formValidations);
 
-  const onSubmitForm = (event) => {
+  const onSubmitForm = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
@@ -57,7 +59,6 @@ export const LoginPage = () => {
   };
 
   const signInWithGoogle = () => {
-    console.log('pressed');
     dispatch(startGoogleSignIn());
   };
   return (
@@ -98,7 +99,6 @@ export const LoginPage = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <Button
-                onClick={onSubmitForm}
                 disabled={isAuthenticating}
                 type="submit"
                 variant="contained"

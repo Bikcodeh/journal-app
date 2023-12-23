@@ -13,7 +13,7 @@ export const signInWithGoogle = async () => {
             ok: true,
             displayName, photoURL, uid, email
         }
-    } catch (error) {
+    } catch (error: any) {
         const errorCode = error.code;
         const errorMessage = error.message;
         return {
@@ -23,24 +23,37 @@ export const signInWithGoogle = async () => {
     }
 }
 
-export const registerUserWithEmailPassword = async ({ email, password, displayName }) => {
+export interface RegisterArgs {
+    email: string;
+    password: string;
+    displayName: string;
+}
+
+export const registerUserWithEmailPassword = async ({ email, password, displayName }: RegisterArgs) => {
     try {
         const resp = await createUserWithEmailAndPassword(FirebaseAuth, email, password);
         const { uid, photoURL } = resp.user;
-        await updateProfile(FirebaseAuth.currentUser, { displayName });
+        const user = FirebaseAuth.currentUser;
+        if (!user) return { ok: false, errorMessage: "User not found" };;
+        await updateProfile(user, { displayName });
         return {
             ok: true,
             uid,
             photoURL,
             email,
             displayName
-        }
-    } catch (error) {
+        };
+    } catch (error: any) {
         return { ok: false, errorMessage: error.message }
     }
 }
 
-export const loginWithEmailPassword = async ({ email, password }) => {
+interface LoginArgs {
+    email: string;
+    password: string;
+}
+
+export const loginWithEmailPassword = async ({ email, password }: LoginArgs) => {
     try {
         const resp = await signInWithEmailAndPassword(FirebaseAuth, email, password);
         const { photoURL, displayName, uid } = resp.user;
@@ -50,7 +63,7 @@ export const loginWithEmailPassword = async ({ email, password }) => {
             photoURL,
             displayName
         }
-    } catch (error) {
+    } catch (error: any) {
         return { ok: false, errorMessage: error.message }
     }
 }

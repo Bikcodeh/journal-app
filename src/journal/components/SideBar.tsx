@@ -13,11 +13,15 @@ import {
 import { ArrowBack, Comment } from "@mui/icons-material";
 import { setIsMenuOpen } from "../../store/menu/menuSlice";
 import { SideBarItem } from "./SideBarItem";
-import { useEffect } from "react";
+import { useAppSelector } from "../../hooks/hooks";
 
-export const SideBar = React.memo(({ drawerWidth = 240 }) => {
-  const { isOpen } = useSelector((state) => state.menu);
-  const { notes, active } = useSelector(
+interface Props {
+  drawerWidth: number;
+}
+
+export const SideBar = React.memo(({ drawerWidth = 240 }: Props) => {
+  const { isOpen } = useAppSelector((state) => state.menu);
+  const { notes, active } = useAppSelector(
     (state) => state.journal,
     (prevState, nextState) =>
       prevState.notes === nextState.notes &&
@@ -71,7 +75,7 @@ export const SideBar = React.memo(({ drawerWidth = 240 }) => {
     </>
   );
 
-  const { displayName } = useSelector((state) => state.auth);
+  const { displayName } = useAppSelector((state) => state.auth);
   return (
     <Box
       component="nav"

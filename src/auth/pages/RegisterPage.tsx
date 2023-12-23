@@ -1,5 +1,4 @@
 import { Link as RouterLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import {
   Grid,
   Typography,
@@ -10,9 +9,11 @@ import {
 } from "@mui/material";
 import { AuthLayout } from "../layout/AuthLayout";
 import { useForm } from "../../hooks/useForm";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { startCreatingUserWithEmailPassword } from "../../store/auth/thunks";
 import { useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { FormValidations } from "../../interface";
 
 const formData = {
   email: "exmaple@gmail.com",
@@ -20,24 +21,31 @@ const formData = {
   displayName: "Bikcode",
 };
 
-const formValidations = {
-  email: [(value) => value.includes("@"), "Email must to have @"],
+const formValidations: FormValidations = {
+  email: [(value: string) => value.includes("@"), "Email must to have @"],
   password: [
-    (value) => value.length >= 6,
+    (value: string) => value.length >= 6,
     "Password must to have more than 6 characters",
   ],
-  displayName: [(value) => value.length >= 1, "Name is required"],
+  displayName: [(value: string) => value.length >= 1, "Name is required"],
 };
 
 export const RegisterPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [formSubmitted, setformSubmitted] = useState(false);
-  const { status, errorMessage } = useSelector((state) => state.auth);
+  const { status, errorMessage } = useAppSelector((state) => state.auth);
   const isCheckingAuthentication = useMemo(
     () => status === "checking",
     [status]
   );
+
+  interface FormData {
+    email: string;
+    password: string;
+    displayName: string;
+    [x:string]: any;
+  }
 
   const {
     email,
@@ -49,9 +57,9 @@ export const RegisterPage = () => {
     passwordValid,
     displayNameValid,
     isFormValid,
-  } = useForm(formData, formValidations);
+  } = useForm<FormData>(formData, formValidations);
 
-  const onSubmitForm = (event) => {
+  const onSubmitForm = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setformSubmitted(true);
     if (!isFormValid) return;

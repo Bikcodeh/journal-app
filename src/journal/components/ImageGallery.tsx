@@ -1,6 +1,11 @@
 import {ImageList, ImageListItem} from '@mui/material';
 
-export const ImageGallery = ( { images }) =>  {
+interface Props {
+  images: string[] | undefined;
+}
+
+export const ImageGallery = ( { images }: Props) =>  {
+  if (!images) return;
   return (
     <ImageList sx={{ width: '200%', height: 450 }} cols={3} rowHeight={164}>
       {images.map((image) => (
