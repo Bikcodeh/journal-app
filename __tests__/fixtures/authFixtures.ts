@@ -1,3 +1,5 @@
+import { Note } from "../../src/store/journal"
+
 export const initialState = {
     status: 'checking', // 'checking', 'not-authenticated', 'authenticated'
     uid: null,
@@ -32,7 +34,8 @@ export const demoUser = {
     photoURL: 'https://foto.jpg'
 }
 
-export const noteFake = {
+export const noteFake: Note = {
+    id: 'ABC123',
     body: 'body test',
     date: 123123,
     imageUrls: ['data', 'dataaa'],

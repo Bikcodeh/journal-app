@@ -3,15 +3,15 @@ import { loginWithEmailPassword, logoutFirebase, registerUserWithEmailPassword, 
 import { clearAndLogout } from "../journal/journalSlice";
 import { checkingCredentials, login, logout } from "./authSlice"
 
-export const checkingAuthentication = createAsyncThunk('auth/checkingAuthentication', async (_, thunkApi) => {
-    thunkApi.dispatch(checkingCredentials())
+export const checkingAuthentication = createAsyncThunk('auth/checkingAuthentication', async (_, { dispatch }) => {
+    dispatch(checkingCredentials())
 })
 
-export const startGoogleSignIn = createAsyncThunk('auth/startGoogleSignIn', async (_, thunkApi) => {
-    thunkApi.dispatch(checkingCredentials());
+export const startGoogleSignIn = createAsyncThunk('auth/startGoogleSignIn', async (_, { dispatch }) => {
+    dispatch(checkingCredentials());
     const result = await signInWithGoogle();
-    if (!result.ok) return thunkApi.dispatch(logout(null));
-    thunkApi.dispatch(login({
+    if (!result.ok) return dispatch(logout(null));
+    dispatch(login({
         uid: result.uid!,
         displayName: result.displayName!,
         email: result.email!,

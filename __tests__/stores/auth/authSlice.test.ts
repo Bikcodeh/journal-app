@@ -1,3 +1,4 @@
+import React from 'react';
 import { authSlice, checkingCredentials, login, logout } from "../../../src/store/auth/authSlice"
 import { authenticatedState, demoUser, initialState } from "../../fixtures/authFixtures";
 
@@ -22,7 +23,7 @@ describe('Tests for authSlice', () => {
     });
 
     test('should set state when logout without message', () => {
-        const state = authSlice.reducer(authenticatedState, logout());
+        const state = authSlice.reducer(authenticatedState, logout(null));
         expect(state).toEqual(
             {
                 status: 'not-authenticated', // 'checking', 'not-authenticated', 'authenticated'
@@ -30,14 +31,14 @@ describe('Tests for authSlice', () => {
                 email: null,
                 displayName: null,
                 photoURL: null,
-                errorMessage: undefined,
+                errorMessage: null,
             }
         );
     });
 
     test('should set state when logout with message', () => {
         const message= 'Error in logout'
-        const state = authSlice.reducer(authenticatedState, logout({errorMessage: message}));
+        const state = authSlice.reducer(authenticatedState, logout(message));
         expect(state).toEqual(
             {
                 status: 'not-authenticated', // 'checking', 'not-authenticated', 'authenticated'

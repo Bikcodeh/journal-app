@@ -2,7 +2,7 @@ import { RootState } from './../store';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { doc, collection, setDoc, deleteDoc, addDoc, updateDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
-import { JournalState, Note, addNewEmptyNote, deleteNoteById, setActiveNote, setImagesToActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
+import { Note, addNewEmptyNote, deleteNoteById, setActiveNote, setImagesToActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
 import { loadNotes } from "../../helpers/loadNotes";
 import { fileUpload } from "../../helpers/fileUpload";
 import { AuthState } from '../auth';
@@ -35,7 +35,6 @@ export const startSavingNote = createAsyncThunk<void, SavingNoteData, { state: R
     dispatch(setSaving());
     const { uid } = getState().auth;
     const { active: note } = getState().journal;
-    console.log(note);
     const noteToUpdate: Note = { ...note!, title, body };
     if (noteToUpdate.id !== undefined && noteToUpdate.id !== null && noteToUpdate.id !== '') {
         const docRef = doc(FirebaseDB, `${uid}/journal/notes/${noteToUpdate.id}`);
@@ -52,7 +51,7 @@ export const startSavingNote = createAsyncThunk<void, SavingNoteData, { state: R
 
 })
 
-interface UploadFilesParams {
+export interface UploadFilesParams {
     files: FileList;
 }
 
